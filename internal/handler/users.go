@@ -1,8 +1,10 @@
 package handler
 
 import (
+	"encoding/json"
 	"net/http"
 	"strconv"
+	"time-tracker/internal/model"
 
 	"github.com/gin-gonic/gin"
 )
@@ -60,5 +62,24 @@ func (h *Handler) updateUser(c *gin.Context) {
 }
 
 func (h *Handler) createUser(c *gin.Context) {
+	var user model.User
+	if err := json.NewDecoder(c.Request.Body).Decode(&user); err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "json decoding error"})
+		return
+	}
 
+	if user.PassportNumber == "" {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "empty passportNumber field"})
+		return
+	}
+
+	userId, err := h.services.Users.CreateUser(user)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, map[string]int{
+		"id": userId,
+	})
 }

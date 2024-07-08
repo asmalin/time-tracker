@@ -8,6 +8,7 @@ import (
 
 type Users interface {
 	GetUsers(filters map[string]string, limit int, cursor int) ([]model.User, error)
+	CreateUser(user model.User) (userId int, err error)
 }
 
 type Tasks interface {

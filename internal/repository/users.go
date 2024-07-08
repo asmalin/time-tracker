@@ -38,3 +38,12 @@ func (r *UsersRepo) GetUsers(filters map[string]string, limit int, cursor int) (
 
 	return users, nil
 }
+
+func (r *UsersRepo) CreateUser(user model.User) (userId int, err error) {
+	result := r.db.Create(&user)
+	if result.Error != nil {
+		return 0, result.Error
+	}
+
+	return user.Id, nil
+}
