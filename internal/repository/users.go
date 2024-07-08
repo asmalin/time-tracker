@@ -49,7 +49,19 @@ func (r *UsersRepo) CreateUser(user model.User) (userId int, err error) {
 }
 
 func (r *UsersRepo) DeleteUser(userId int) error {
-	result := r.db.Delete(model.User{}, "id = ?", userId)
+
+	var user model.User
+	result := r.db.First(&user, userId)
+
+	if result.Error != nil {
+		if result.Error == gorm.ErrRecordNotFound {
+			return fmt.Errorf("user with ID %d does not exist", userId)
+		} else {
+			return fmt.Errorf("error: %v", result.Error)
+		}
+	}
+
+	result = r.db.Delete(model.User{}, "id = ?", userId)
 	if result.Error != nil {
 		return result.Error
 	}
