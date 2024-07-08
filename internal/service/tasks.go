@@ -17,3 +17,7 @@ func (s *TasksService) StartTask(task model.Task) (model.Task, error) {
 
 	return s.repo.CreateTask(task)
 }
+
+func (s *TasksService) FinishTask(userId int, taskId int) (model.Task, error) {
+	return s.repo.FinishTask(userId, taskId)
+}

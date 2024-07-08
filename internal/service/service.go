@@ -15,6 +15,7 @@ type Users interface {
 
 type Tasks interface {
 	StartTask(task model.Task) (model.Task, error)
+	FinishTask(userId int, taskId int) (model.Task, error)
 }
 
 type Service struct {

@@ -52,5 +52,27 @@ func (h *Handler) startTask(c *gin.Context) {
 }
 
 func (h *Handler) endTask(c *gin.Context) {
+	userIdStr := c.Param("userId")
 
+	userId, err := strconv.Atoi(userIdStr)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid user ID"})
+		return
+	}
+
+	taskIdStr := c.Param("taskId")
+
+	taskId, err := strconv.Atoi(taskIdStr)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid task ID"})
+		return
+	}
+
+	task, err := h.services.Tasks.FinishTask(userId, taskId)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, task)
 }

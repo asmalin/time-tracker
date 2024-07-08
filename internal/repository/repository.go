@@ -16,6 +16,7 @@ type Users interface {
 
 type Tasks interface {
 	CreateTask(task model.Task) (model.Task, error)
+	FinishTask(userId int, taskId int) (model.Task, error)
 }
 
 type Repository struct {
