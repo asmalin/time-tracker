@@ -24,3 +24,7 @@ func (s *UsersService) CreateUser(user model.User) (userId int, err error) {
 func (s *UsersService) DeleteUser(userId int) (err error) {
 	return s.repo.DeleteUser(userId)
 }
+
+func (s *UsersService) UpdateUser(userDataToUpdate model.User) error {
+	return s.repo.UpdateUser(userDataToUpdate)
+}

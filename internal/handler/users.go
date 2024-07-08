@@ -74,6 +74,30 @@ func (h *Handler) deleteUser(c *gin.Context) {
 }
 
 func (h *Handler) updateUser(c *gin.Context) {
+	userIdStr := c.Param("userId")
+
+	userId, err := strconv.Atoi(userIdStr)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid ID"})
+		return
+	}
+
+	var userDataToUpdate model.User
+	err = json.NewDecoder(c.Request.Body).Decode(&userDataToUpdate)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, err)
+		return
+	}
+
+	userDataToUpdate.Id = userId
+
+	err = h.services.Users.UpdateUser(userDataToUpdate)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, userDataToUpdate)
 
 }
 

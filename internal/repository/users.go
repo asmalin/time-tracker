@@ -67,3 +67,12 @@ func (r *UsersRepo) DeleteUser(userId int) error {
 	}
 	return nil
 }
+
+func (r *UsersRepo) UpdateUser(user model.User) error {
+	err := r.db.Save(&user).Error
+
+	if err != nil {
+		return err
+	}
+	return nil
+}
