@@ -76,3 +76,17 @@ func (r *UsersRepo) UpdateUser(user model.User) error {
 	}
 	return nil
 }
+
+func (r *UsersRepo) GetUserById(userId int) (model.User, error) {
+	var user model.User
+	result := r.db.First(&user, userId)
+
+	if result.Error != nil {
+		if result.Error == gorm.ErrRecordNotFound {
+			return model.User{}, fmt.Errorf("user with ID %d does not exist", userId)
+		} else {
+			return model.User{}, fmt.Errorf("error: %v", result.Error)
+		}
+	}
+	return user, nil
+}

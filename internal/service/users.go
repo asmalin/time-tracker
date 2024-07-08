@@ -17,6 +17,10 @@ func (s *UsersService) GetUsers(filters map[string]string, limit int, cursor int
 	return s.repo.GetUsers(filters, limit, cursor)
 }
 
+func (s *UsersService) GetUserById(userId int) (model.User, error) {
+	return s.repo.GetUserById(userId)
+}
+
 func (s *UsersService) CreateUser(user model.User) (userId int, err error) {
 	return s.repo.CreateUser(user)
 }
