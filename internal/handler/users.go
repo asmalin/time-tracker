@@ -54,6 +54,22 @@ func (h *Handler) getUsers(c *gin.Context) {
 }
 
 func (h *Handler) deleteUser(c *gin.Context) {
+	userIdStr := c.Param("userId")
+
+	userId, err := strconv.Atoi(userIdStr)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid ID"})
+		return
+	}
+
+	err = h.services.Users.DeleteUser(userId)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, map[string]int{
+		"id": userId})
 
 }
 

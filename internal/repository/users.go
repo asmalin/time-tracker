@@ -47,3 +47,11 @@ func (r *UsersRepo) CreateUser(user model.User) (userId int, err error) {
 
 	return user.Id, nil
 }
+
+func (r *UsersRepo) DeleteUser(userId int) error {
+	result := r.db.Delete(model.User{}, "id = ?", userId)
+	if result.Error != nil {
+		return result.Error
+	}
+	return nil
+}
