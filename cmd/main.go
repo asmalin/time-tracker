@@ -1,14 +1,22 @@
 package main
 
 import (
-	"log"
 	"os"
 	"time-tracker/internal/handler"
 	"time-tracker/internal/repository"
 	"time-tracker/internal/service"
 
 	"github.com/joho/godotenv"
+	"github.com/sirupsen/logrus"
 )
+
+var log = logrus.New()
+
+func init() {
+	log.SetFormatter(&logrus.JSONFormatter{})
+	log.SetOutput(os.Stdout)
+	log.SetLevel(logrus.DebugLevel)
+}
 
 func main() {
 	if err := godotenv.Load("../.env"); err != nil {
@@ -28,11 +36,16 @@ func main() {
 		log.Fatalf("Failed to init DB: %s", err.Error())
 	}
 
+	log.Info("Successfully connected to database")
+
 	repository.AutoMigrate(db)
+
+	log.Info("Successfully migrate models")
 
 	repo := repository.NewRepository(db)
 	services := service.NewService(repo)
 	handlers := handler.NewHandler(services)
 
-	handlers.InitRoutes().Run(":8080")
+	log.Info("Server started")
+	handlers.InitRoutes(log).Run("0.0.0.0:" + os.Getenv("SERVER_PORT"))
 }

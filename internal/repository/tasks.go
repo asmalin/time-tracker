@@ -16,6 +16,14 @@ func NewTasksRepo(db *gorm.DB) *TasksRepo {
 	return &TasksRepo{db: db}
 }
 
+func (r *TasksRepo) GetTasksForPeriod(userId int, start, end time.Time) []model.Task {
+	var tasks []model.Task
+	query := r.db.Where("user_id = ? AND DATE(start_time) >= ? AND DATE(end_time) <= ?", userId, start, end)
+	query.Order("EXTRACT(EPOCH FROM end_time - start_time) DESC").Find(&tasks)
+
+	return tasks
+}
+
 func (r *TasksRepo) CreateTask(task model.Task) (model.Task, error) {
 
 	result := r.db.Create(&task)

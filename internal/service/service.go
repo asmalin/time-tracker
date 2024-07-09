@@ -1,6 +1,8 @@
 package service
 
 import (
+	"time"
+	"time-tracker/internal/entity"
 	"time-tracker/internal/model"
 	"time-tracker/internal/repository"
 )
@@ -14,6 +16,7 @@ type Users interface {
 }
 
 type Tasks interface {
+	GetTasksForPeriod(userId int, start time.Time, end time.Time) ([]entity.TaskSummary, error)
 	StartTask(task model.Task) (model.Task, error)
 	FinishTask(userId int, taskId int) (model.Task, error)
 }

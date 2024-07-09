@@ -48,6 +48,7 @@ require (
 	github.com/go-gormigrate/gormigrate/v2 v2.1.2
 	github.com/golang-migrate/migrate/v4 v4.17.1
 	github.com/joho/godotenv v1.5.1
+	github.com/sirupsen/logrus v1.9.3
 	golang.org/x/crypto v0.23.0 // indirect
 	golang.org/x/text v0.15.0 // indirect
 	gorm.io/driver/postgres v1.5.9

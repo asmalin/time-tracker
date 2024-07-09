@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"time"
 	"time-tracker/internal/model"
 
 	"gorm.io/gorm"
@@ -15,6 +16,7 @@ type Users interface {
 }
 
 type Tasks interface {
+	GetTasksForPeriod(userId int, start, end time.Time) []model.Task
 	CreateTask(task model.Task) (model.Task, error)
 	FinishTask(userId int, taskId int) (model.Task, error)
 }

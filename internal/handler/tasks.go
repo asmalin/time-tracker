@@ -12,6 +12,32 @@ import (
 
 func (h *Handler) getUserTasks(c *gin.Context) {
 
+	userIdStr := c.Param("userId")
+
+	userId, err := strconv.Atoi(userIdStr)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid user ID"})
+		return
+	}
+
+	start, err := time.Parse("2006-01-02", c.Query("start"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid time start"})
+		return
+	}
+
+	end, err := time.Parse("2006-01-02", c.Query("end"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid time end"})
+		return
+	}
+
+	tasks, err := h.services.Tasks.GetTasksForPeriod(userId, start, end)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, err.Error())
+		return
+	}
+	c.JSON(http.StatusOK, tasks)
 }
 
 func (h *Handler) startTask(c *gin.Context) {
