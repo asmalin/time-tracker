@@ -14,6 +14,13 @@ import (
 // @Description Получение массива данных всех пользователей
 // @Accept  json
 // @Produce  json
+// @Param limit query int false "Users limit on fetch"
+// @Param cursor query int false "Last id from previous fetch"
+// @Param passport_number query string false "Passport number"
+// @Param name query string false "Name"
+// @Param surname query string false "Surname"
+// @Param patronymic query string false "Patronymic"
+// @Param address query string false "Address"
 // @Success 200 {array} model.User
 // @Failure 400 {string} string "error"
 // @Router /users [get]

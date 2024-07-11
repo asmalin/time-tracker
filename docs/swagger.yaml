@@ -76,6 +76,35 @@ paths:
       consumes:
       - application/json
       description: Получение массива данных всех пользователей
+      parameters:
+      - description: Users limit on fetch
+        in: query
+        name: limit
+        type: integer
+      - description: Last id from previous fetch
+        in: query
+        name: cursor
+        type: integer
+      - description: Passport number
+        in: query
+        name: passport_number
+        type: string
+      - description: Name
+        in: query
+        name: name
+        type: string
+      - description: Surname
+        in: query
+        name: surname
+        type: string
+      - description: Patronymic
+        in: query
+        name: patronymic
+        type: string
+      - description: Address
+        in: query
+        name: address
+        type: string
       produces:
       - application/json
       responses:
