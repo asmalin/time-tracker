@@ -1,10 +1,9 @@
 package repository
 
 import (
+	"database/sql"
 	"time"
 	"time-tracker/internal/model"
-
-	"gorm.io/gorm"
 )
 
 type Users interface {
@@ -12,11 +11,11 @@ type Users interface {
 	GetUserById(userId int) (model.User, error)
 	CreateUser(user model.User) (userId int, err error)
 	DeleteUser(userId int) error
-	UpdateUser(user model.User) error
+	UpdateUser(userId int, user model.UpdateUserInput) error
 }
 
 type Tasks interface {
-	GetTasksForPeriod(userId int, start, end time.Time) []model.Task
+	GetTasksForPeriod(userId int, start, end time.Time) ([]model.Task, error)
 	CreateTask(task model.Task) (model.Task, error)
 	FinishTask(userId int, taskId int) (model.Task, error)
 }
@@ -26,13 +25,9 @@ type Repository struct {
 	Tasks
 }
 
-func NewRepository(db *gorm.DB) *Repository {
+func NewRepository(db *sql.DB) *Repository {
 	return &Repository{
 		Users: NewUsersRepo(db),
 		Tasks: NewTasksRepo(db),
 	}
-}
-
-func AutoMigrate(db *gorm.DB) {
-	db.AutoMigrate(&model.User{}, &model.Task{})
 }

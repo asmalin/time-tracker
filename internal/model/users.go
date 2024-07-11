@@ -2,9 +2,21 @@ package model
 
 type User struct {
 	Id             int    `json:"id" `
-	PassportNumber string `json:"passportNumber" gorm:"type:varchar(50)"`
-	Surname        string `json:"surname" gorm:"type:varchar(100)"`
-	Name           string `json:"name" gorm:"type:varchar(100)"`
-	Patronymic     string `json:"patronymic" gorm:"type:varchar(100)"`
-	Address        string `json:"address" gorm:"type:varchar(255)"`
+	PassportNumber string `json:"passportNumber"`
+	Surname        string `json:"surname"`
+	Name           string `json:"name"`
+	Patronymic     string `json:"patronymic"`
+	Address        string `json:"address"`
+}
+
+type UpdateUserInput struct {
+	PassportNumber string `json:"passportNumber" sql:"passport_number"`
+	Surname        string `json:"surname" sql:"surname"`
+	Name           string `json:"name" sql:"name"`
+	Patronymic     string `json:"patronymic" sql:"patronymic"`
+	Address        string `json:"address" sql:"address"`
+}
+
+type UserIDResponse struct {
+	ID int `json:"id" example:"1"`
 }

@@ -7,6 +7,11 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
+
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
+
+	_ "time-tracker/docs"
 )
 
 type Handler struct {
@@ -27,10 +32,12 @@ func (h *Handler) InitRoutes(log *logrus.Logger) *gin.Engine {
 	router.GET("/users", h.getUsers)
 	router.POST("/users", h.createUser)
 	router.DELETE("/users/:userId", h.deleteUser)
-	router.PUT("/users/:userId", h.updateUser)
+	router.PATCH("/users/:userId", h.updateUser)
 	router.GET("/users/:userId/tasks", h.getUserTasks)
 	router.POST("/users/:userId/task", h.startTask)
 	router.POST("/users/:userId/task/:taskId/end", h.endTask)
+
+	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	return router
 }

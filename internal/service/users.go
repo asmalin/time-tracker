@@ -29,6 +29,19 @@ func (s *UsersService) DeleteUser(userId int) (err error) {
 	return s.repo.DeleteUser(userId)
 }
 
-func (s *UsersService) UpdateUser(userDataToUpdate model.User) error {
-	return s.repo.UpdateUser(userDataToUpdate)
+func (s *UsersService) UpdateUser(userId int, userDataToUpdate model.UpdateUserInput) (model.User, error) {
+
+	err := s.repo.UpdateUser(userId, userDataToUpdate)
+
+	if err != nil {
+		return model.User{}, err
+	}
+
+	user, err := s.repo.GetUserById(userId)
+
+	if err != nil {
+		return model.User{}, err
+	}
+
+	return user, nil
 }

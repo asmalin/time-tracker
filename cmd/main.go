@@ -1,13 +1,21 @@
 package main
 
+// @title Time Tracker API
+// @version 1.0
+// @description API для отслеживания времени выполнения задач
+
 import (
+	"embed"
 	"os"
 	"time-tracker/internal/handler"
+	"time-tracker/internal/migrator"
 	"time-tracker/internal/repository"
 	"time-tracker/internal/service"
 
 	"github.com/joho/godotenv"
 	"github.com/sirupsen/logrus"
+
+	_ "time-tracker/docs"
 )
 
 var log = logrus.New()
@@ -17,6 +25,11 @@ func init() {
 	log.SetOutput(os.Stdout)
 	log.SetLevel(logrus.DebugLevel)
 }
+
+const migrationsDir = "migrations"
+
+//go:embed migrations/*.sql
+var MigrationsFS embed.FS
 
 func main() {
 	if err := godotenv.Load("../.env"); err != nil {
@@ -38,14 +51,20 @@ func main() {
 
 	log.Info("Successfully connected to database")
 
-	repository.AutoMigrate(db)
+	migrator := migrator.MustGetNewMigrator(MigrationsFS, migrationsDir)
 
-	log.Info("Successfully migrate models")
+	err = migrator.ApplyMigrations(db)
+
+	if err != nil {
+		panic(err)
+	}
+
+	log.Info("Migration was completed successfully")
 
 	repo := repository.NewRepository(db)
 	services := service.NewService(repo)
 	handlers := handler.NewHandler(services)
 
-	log.Info("Server started")
+	log.Info("Starting server")
 	handlers.InitRoutes(log).Run("0.0.0.0:" + os.Getenv("SERVER_PORT"))
 }

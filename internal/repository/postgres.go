@@ -1,12 +1,10 @@
 package repository
 
 import (
+	"database/sql"
 	"fmt"
-	"log"
 
 	_ "github.com/lib/pq"
-	"gorm.io/driver/postgres"
-	"gorm.io/gorm"
 )
 
 type Config struct {
@@ -18,14 +16,18 @@ type Config struct {
 	SSLMode  string
 }
 
-func ConnectDB(cfg Config) (*gorm.DB, error) {
-	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=%s",
-		cfg.Host, cfg.Username, cfg.Password, cfg.DBName, cfg.Port, cfg.SSLMode)
+func ConnectDB(cfg Config) (*sql.DB, error) {
+	dsn := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=%s",
+		cfg.Host, cfg.Port, cfg.Username, cfg.Password, cfg.DBName, cfg.SSLMode)
 
-	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	db, err := sql.Open("postgres", dsn)
 	if err != nil {
-		log.Fatal(err)
+		return nil, err
 	}
 
-	return db, err
+	if err := db.Ping(); err != nil {
+		return nil, err
+	}
+
+	return db, nil
 }

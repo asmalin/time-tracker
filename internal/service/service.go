@@ -2,7 +2,7 @@ package service
 
 import (
 	"time"
-	"time-tracker/internal/entity"
+
 	"time-tracker/internal/model"
 	"time-tracker/internal/repository"
 )
@@ -12,12 +12,12 @@ type Users interface {
 	GetUserById(userId int) (model.User, error)
 	CreateUser(model.User) (userId int, err error)
 	DeleteUser(userId int) error
-	UpdateUser(userDataToUpdate model.User) error
+	UpdateUser(userId int, userDataToUpdate model.UpdateUserInput) (model.User, error)
 }
 
 type Tasks interface {
-	GetTasksForPeriod(userId int, start time.Time, end time.Time) ([]entity.TaskSummary, error)
-	StartTask(task model.Task) (model.Task, error)
+	GetTasksForPeriod(userId int, start time.Time, end time.Time) ([]model.TaskSummary, error)
+	StartTask(userId int, taskData model.TaskDataToCreate) (model.Task, error)
 	FinishTask(userId int, taskId int) (model.Task, error)
 }
 

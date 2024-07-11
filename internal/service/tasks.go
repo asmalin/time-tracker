@@ -3,7 +3,7 @@ package service
 import (
 	"fmt"
 	"time"
-	"time-tracker/internal/entity"
+
 	"time-tracker/internal/model"
 	"time-tracker/internal/repository"
 )
@@ -16,17 +16,21 @@ func NewTasksService(repo repository.Tasks) *TasksService {
 	return &TasksService{repo: repo}
 }
 
-func (s *TasksService) GetTasksForPeriod(userId int, start time.Time, end time.Time) ([]entity.TaskSummary, error) {
-	tasks := s.repo.GetTasksForPeriod(userId, start, end)
+func (s *TasksService) GetTasksForPeriod(userId int, start time.Time, end time.Time) ([]model.TaskSummary, error) {
+	tasks, err := s.repo.GetTasksForPeriod(userId, start, end)
 
-	var taskSummaries []entity.TaskSummary
+	if err != nil {
+		return nil, err
+	}
+
+	var taskSummaries []model.TaskSummary
 	for _, task := range tasks {
 		if task.StartTime.IsZero() || task.EndTime.IsZero() {
 			continue
 		}
 
 		duration := task.EndTime.Sub(task.StartTime)
-		taskSummaries = append(taskSummaries, entity.TaskSummary{
+		taskSummaries = append(taskSummaries, model.TaskSummary{
 			TaskName: task.Name,
 			Duration: fmt.Sprintf("%02d:%02d", int(duration.Hours()), int(duration.Minutes())%60),
 			Start:    task.StartTime.Format("2006-01-02 15:04"),
@@ -41,7 +45,13 @@ func (s *TasksService) GetTasksForPeriod(userId int, start time.Time, end time.T
 	return taskSummaries, nil
 }
 
-func (s *TasksService) StartTask(task model.Task) (model.Task, error) {
+func (s *TasksService) StartTask(userId int, taskData model.TaskDataToCreate) (model.Task, error) {
+
+	var task model.Task
+
+	task.Name = taskData.Name
+	task.StartTime = time.Now()
+	task.UserId = userId
 
 	return s.repo.CreateTask(task)
 }
